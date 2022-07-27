@@ -11,4 +11,6 @@ public interface EventRepository extends JpaRepository<Events,Integer> {
 
     Events findByEventId(int id);
 
+
+
 }

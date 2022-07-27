@@ -41,8 +41,22 @@ List<Events> events=eventRepository.findAll();
         eventRepository.save(event);
     }
 
+    public void addUsers(int eventId,int userId){
+        Events currentEvent=eventRepository.findByEventId(eventId);
+        Users targetUser= userRepository.findByUserId(userId);
+        currentEvent.getParticipants().add(targetUser);
 
+    }
 
+    public void discardUsers(int eventId,int userId){
+        Events currentEvent=eventRepository.findByEventId(eventId);
+        Users targetUser= userRepository.findByUserId(userId);
+        currentEvent.getParticipants().remove(targetUser);
+    }
+
+   public List<Events> getAllEvents(){
+    return eventRepository.findAll();
+   }
 
 
 }

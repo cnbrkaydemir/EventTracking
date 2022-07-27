@@ -17,7 +17,8 @@ import java.util.Set;
 public class Users {
 
     @Id
-    @GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GenericGenerator(name = "native",strategy = "native")
     @Column(name = "user_id")
     private int userId;
 
@@ -54,6 +55,8 @@ public class Users {
             inverseJoinColumns = {
                     @JoinColumn(name = "event_id")})
     private List<Events> events = new ArrayList<>();
+
+
 
 
     @OneToMany(mappedBy="users",fetch=FetchType.EAGER)
@@ -115,19 +118,27 @@ public class Users {
         this.userPassword = userPassword;
     }
 
-    public String getRole() {
-        return userRole;
-    }
-
-    public void setRole(String role) {
-        this.userRole = role;
-    }
-
     public List<Events> getEvents() {
         return events;
     }
 
     public void setEvents(List<Events> events) {
         this.events = events;
+    }
+
+    public String getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
+
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
     }
 }

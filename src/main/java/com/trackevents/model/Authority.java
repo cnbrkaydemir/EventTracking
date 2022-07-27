@@ -20,6 +20,10 @@ public class Authority {
     @JoinColumn(name = "user_id")
     private Users users;
 
+    public Authority(String name, Users users) {
+        this.name = name;
+        this.users = users;
+    }
 
     public Long getId() {
         return this.id;
