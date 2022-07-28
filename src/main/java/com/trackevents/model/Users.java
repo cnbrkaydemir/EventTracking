@@ -13,7 +13,6 @@ import java.util.Set;
 
 @Entity
 @Table(name="users")
-@JsonIgnoreProperties(value = {"authorities","userId"})
 public class Users {
 
     @Id
