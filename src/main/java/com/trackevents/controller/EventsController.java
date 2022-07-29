@@ -24,7 +24,8 @@ public class EventsController {
     }
 
     @PostMapping("/createEvent")
-    public Events createEvent(@RequestBody Events event, @RequestBody Users adminUser){
+    public Events createEvent(@RequestBody Events event, HttpSession httpSession){
+        Users adminUser=(Users) httpSession.getAttribute("userdetails");
         event.setCreated_by(adminUser);
         event.getParticipants().add(adminUser);
         adminUser.getEvents().add(event);
@@ -42,7 +43,8 @@ public class EventsController {
     }
 
     @GetMapping("/displayEvents")
-    public List<Events> displayEvents(@RequestBody Users target){
+    public List<Events> displayEvents(HttpSession httpSession){
+        Users target= (Users) httpSession.getAttribute("userdetails");
         eventService.setExpired();
         List<Events> events=target.getEvents();
 
