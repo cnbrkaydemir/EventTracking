@@ -25,6 +25,10 @@ public class Authority {
         this.users = users;
     }
 
+    public Authority(){
+
+    }
+
     public Long getId() {
         return this.id;
     }

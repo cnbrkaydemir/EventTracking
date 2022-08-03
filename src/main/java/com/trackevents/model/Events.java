@@ -1,5 +1,7 @@
 package com.trackevents.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -11,6 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "events")
+
 public class Events {
 
  @Id
@@ -41,6 +44,8 @@ private String eventTitle;
  @Column(name = "event_expired")
  private Date eventExpired;
 
+
+
  @ManyToMany(mappedBy = "events", fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
  private List<Users> participants = new ArrayList<>();
 
@@ -51,6 +56,7 @@ private String eventTitle;
  @JoinColumn(name = "user_id")
  private Users created_by;
 
+ @Column(name = "is_expired")
  private boolean isExpired;
 
  public Events() {

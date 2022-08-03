@@ -3,6 +3,7 @@ package com.trackevents.controller;
 import com.trackevents.model.Authority;
 import com.trackevents.model.Events;
 import com.trackevents.model.Users;
+import com.trackevents.service.EventService;
 import com.trackevents.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +17,12 @@ import java.util.List;
 public class UsersController {
 
     private final UserService userService;
+    private final EventService evs;
 
     @Autowired
-    public UsersController(UserService usv){
+    public UsersController(UserService usv,EventService evs){
         this.userService=usv;
+        this.evs=evs;
     }
 
 @PostMapping(path = "/register")
@@ -40,9 +43,12 @@ public class UsersController {
 }
 
 
-    @GetMapping(path = "/displayEventUsers")
-    public List<Users> displayAll(@RequestBody Events events){
-        return userService.getEventUser(events);
+    @PostMapping(path = "/displayEventUsers")
+    public Events displayAll(@RequestBody int id)
+    {
+        return evs.findById(id);
+
+
     }
 
 

@@ -58,5 +58,9 @@ List<Events> events=eventRepository.findAll();
     return eventRepository.findAll();
    }
 
+   public Events findById(int id){
+    return eventRepository.findByEventId(id);
+   }
+
 
 }

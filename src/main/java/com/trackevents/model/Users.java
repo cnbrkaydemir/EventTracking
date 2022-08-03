@@ -1,5 +1,6 @@
 package com.trackevents.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 import org.hibernate.annotations.GenericGenerator;
@@ -46,7 +47,7 @@ public class Users {
     @NotBlank
     private String userRole;
 
-
+@JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(name = "participation",
             joinColumns = {
@@ -57,7 +58,7 @@ public class Users {
 
 
 
-
+@JsonIgnore
     @OneToMany(mappedBy="users",fetch=FetchType.EAGER)
     private Set<Authority> authorities;
 
