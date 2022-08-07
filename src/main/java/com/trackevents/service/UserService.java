@@ -39,4 +39,7 @@ public class UserService {
         return userRepository.findByEvents(events);
     }
 
+    public Users getById(int id){
+        return userRepository.findByUserId(id);
+    }
 }

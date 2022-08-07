@@ -34,10 +34,7 @@ List<Events> events=eventRepository.findAll();
 
 }
 
-    public void createEvent(int id, Events event){
-        Users adminUser = userRepository.findByUserId(id);
-        event.getParticipants().add(adminUser);
-        event.setCreated_by(adminUser);
+    public void createEvent(Events event){
         eventRepository.save(event);
     }
 

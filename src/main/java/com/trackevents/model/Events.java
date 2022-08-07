@@ -17,30 +17,28 @@ import java.util.List;
 public class Events {
 
  @Id
- @GeneratedValue(strategy= GenerationType.AUTO)
- @GenericGenerator(name = "native",strategy = "native")
+ @GeneratedValue(strategy= GenerationType.IDENTITY)
  @Column(name = "event_id")
  private int eventId;
 
 
- @NotBlank
- @Size(message = "Title should be at least 5 characters",min = 5)
  @Column(name = "event_title")
+ @Size(message = "Title should be at least 5 characters",min = 5)
+ @NotBlank
 private String eventTitle;
 
-
- @NotBlank
- @Size(message = "Description should be at least 5 characters",min = 5)
  @Column(name = "event_description")
+ @Size(message = "Description should be at least 5 characters",min = 5)
+ @NotBlank
  private String eventDescription;
 
 
- @NotBlank
+
  @Column(name = "event_date")
  private Date eventDate;
 
 
- @NotBlank
+
  @Column(name = "event_expired")
  private Date eventExpired;
 
