@@ -46,7 +46,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests((auth) -> auth
                         .antMatchers("/createEvent","/addUser","/discardUser","/displayAllUsers","/displayAllEvents","/displayAbsent").hasRole("ADMIN")
-                        .antMatchers("/displayEvents","/displayEventUsers","/displayUser").hasAnyRole("ADMIN","USER")
+                        .antMatchers("/displayEvents","/displayEventUsers","/displayUser","/getParticipationMonth").hasAnyRole("ADMIN","USER")
                         .antMatchers("/register").permitAll())
                 .httpBasic(Customizer.withDefaults());
 
