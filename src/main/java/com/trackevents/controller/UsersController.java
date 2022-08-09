@@ -2,6 +2,7 @@ package com.trackevents.controller;
 
 import com.trackevents.model.Authority;
 import com.trackevents.model.Events;
+import com.trackevents.model.UserParticipation;
 import com.trackevents.model.Users;
 import com.trackevents.repository.AuthorityRepository;
 import com.trackevents.service.EventService;
@@ -13,10 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 public class UsersController {
@@ -58,8 +56,33 @@ public class UsersController {
 
 
 @GetMapping(path = "/displayAllUsers")
-    public List<Users> displayAll(){
-        return userService.getAllUsers();
+    public List<UserParticipation> displayAll(){
+        List<Users> allUsers=userService.getAllUsers();
+        Collections.sort(allUsers, new Comparator<Users>() {
+            @Override
+            public int compare(Users o1, Users o2) {
+                if(o1.getEvents().size()>o2.getEvents().size()){
+                    return -1;
+                }
+                else if(o1.getEvents().size()==o2.getEvents().size()){
+                    return 0;
+                }
+                else{
+                    return 1;
+                }
+            }
+        });
+    while(allUsers.size()!=5){
+        allUsers.remove(allUsers.size()-1);
+    }
+    List<UserParticipation> userInfo=new ArrayList<UserParticipation>();
+
+    allUsers.forEach((users)->{
+        UserParticipation info = new UserParticipation(users.getUserName()+" "+users.getUserSurname(),users.getUserId(),100*users.getEvents().size()/evs.getAllEvents().size() ,users.getEvents().size() );
+        userInfo.add(info);
+    });
+
+        return userInfo;
 }
 
 
