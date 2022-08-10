@@ -45,8 +45,8 @@ public class SecurityConfig {
                 .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
 
                 .authorizeHttpRequests((auth) -> auth
-                        .antMatchers("/createEvent","/addUser","/discardUser","/displayAbsent").hasRole("ADMIN")
-                        .antMatchers("/displayEvents","/displayEventUsers","/displayUser","/getParticipationMonth","/displayAllUsers","/displayAllEvents","getUpcomingEvents").hasAnyRole("ADMIN","USER")
+                        .antMatchers("/createEvent","/addUser","/discardUser","/displayAbsent","/grantAdmin").hasRole("ADMIN")
+                        .antMatchers("/displayEvents","/displayEventUsers","/displayUser","/getParticipationMonth","/displayAllUsers","/displayAllEvents","/getUpcomingEvents").hasAnyRole("ADMIN","USER")
                         .antMatchers("/register").permitAll())
                 .httpBasic(Customizer.withDefaults());
 

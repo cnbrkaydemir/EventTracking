@@ -1,6 +1,7 @@
 package com.trackevents.controller;
 
 
+import com.trackevents.model.EventInfo;
 import com.trackevents.model.Events;
 import com.trackevents.model.UserDto;
 import com.trackevents.model.Users;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -67,9 +69,9 @@ public class EventsController {
     }
 
     @PostMapping("/displayEvents")
-    public List<Events> displayEvents(@RequestBody String Email) {
+    public List<Events> displayEvents(@RequestBody int id) {
         eventService.setExpired();
-        Users target = usv.getByEmail(Email);
+        Users target = usv.getById(id);
         List<Events> listWithoutDuplicates = target.getEvents();
         List<Events> events = listWithoutDuplicates.stream()
                 .distinct()
@@ -173,17 +175,22 @@ public class EventsController {
 
     }
 
-    @PostMapping("getUpcomingEvents")
-    public List<Events> getUpcoming(int id) {
+    @PostMapping("/getUpcomingEvents")
+    public List<EventInfo> getUpcoming(@RequestBody int id) {
+        eventService.setExpired();
         Users target = usv.getById(id);
 
         List<Events> all = target.getEvents();
 
-        List<Events> upcoming = new ArrayList<>();
+        List<Events> upcomings = new ArrayList<>();
 
-        upcoming = all.stream().filter(event -> !event.isExpired()).toList();
+        all.forEach(event ->{
+            if(!event.isExpired()){
+                upcomings.add(event);
+            }
+        });
 
-        Collections.sort(upcoming, new Comparator<Events>() {
+        Collections.sort(upcomings, new Comparator<Events>() {
             @Override
             public int compare(Events o1, Events o2) {
                 if (o1.getEventExpired().compareTo(o2.getEventExpired()) > 0) {
@@ -195,10 +202,36 @@ public class EventsController {
                 }
             }
         });
+    List<Events> upcoming= upcomings.stream()
+        .distinct()
+        .collect(Collectors.toList());
 
-        return upcoming;
+    List<EventInfo> eventInfo= new ArrayList<>();
+
+    upcoming.forEach((event)->{
+        eventInfo.add(new EventInfo(event.getEventTitle(),calculateDifference(new Date(),event.getEventExpired()),event.getEventId(),event.getEventExpired()));
+    });
+
+    if(eventInfo.size()<5){
+        return eventInfo;
+    }
+    else if(eventInfo.size()>5){
+        while(eventInfo.size()!=5){
+            eventInfo.remove(eventInfo.size()-1);
+        }
+        return eventInfo;
+    }
+
+        return eventInfo;
 
 
+    }
+
+    private long calculateDifference(Date d1,Date d2){
+        long diffInMillies = Math.abs(d1.getTime() - d2.getTime());
+        long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+
+        return diff;
     }
 
 }

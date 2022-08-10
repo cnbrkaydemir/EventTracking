@@ -94,5 +94,16 @@ public class UsersController {
 
     }
 
+    @PostMapping(path = "/grantAdmin")
+    public Users grnatAdmin(@RequestBody int id){
+        Users newAdmin=userService.getById(id);
+        newAdmin.setUserRole("admin");
+        Authority newAuthority= new Authority("ROLE_ADMIN",newAdmin);
+        newAdmin.getAuthorities().add(newAuthority);
+        auth.save(newAuthority);
+
+        return newAdmin;
+    }
+
 
 }
