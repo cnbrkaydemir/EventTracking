@@ -17,4 +17,50 @@ is hashed before getting saved to the database. Also note that front-end and bac
 back-end work simultaneously to handle authorization. And that is basically how the back-end works.
 
 
+# Database Overview
+As mentioned before PostgresSql was used as the rdbms for the project. The database called events  has four tables events,users,authorization and participation. Users table contains information about users such as name,surname,email and password. Each user can participate in multiple events. Events table contains information about events such as title,description,start date,end date and created_by. Each event has a creator which is type user. Also events can have multiple users. Authorities is a table for storing user authorization roles like admin or user.  Each user can have multiple authorities or authorization roles. These were the basic tables now let's take a look at relationships between tables and their cardinalities. Users and events have a one-to-one relationship called created_by since only one user could have created an single event.For this relationship we create a foreign key at events table with the id of the user who created this event. Another relationship between users and events is called participation , participation relationship is required since users can participate in multiple events and each event can have multiple users attending it. Therefore we need a table for representing this relationship called participation which holds event id and user id. Each event_id-user_id combination symbolizes a participation of a user to an event. Last relationship is between authorities and users. They have a many-to-one relationship and for that reason we use a foreign key at authorities called user_id.
+
+# Sql Queries to Visualize the Tables
+
+create table events(
+event_id serial Primary Key,    
+event_title varchar(100),
+event_description varchar(500),
+event_date date,
+event_expired  date,
+created_by int,
+FOREIGN KEY (created_by) REFERENCES users (user_id),  
+);
+
+create table users(
+user_id serial Primary Key,
+user_name varchar(100),
+user_surname varchar(100),
+user_email varchar(100),
+user_password varchar(500),    
+user_role varchar(80)
+);
+
+
+CREATE TABLE authorities (
+  id  serial primary key,
+  user_id int NOT NULL,
+  name varchar(50) NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users (user_id)
+);
+
+
+
+create Table participation(
+user_id int Not Null,
+event_id int  Not Null,
+FOREIGN KEY (user_id) REFERENCES users (user_id),
+Foreign Key (event_id) REFERENCES events(event_id)    
+);
+
+
+
+
+
 You can also view the front-end project [event-tracking-ui](https://github.com/cnbrkaydemir/event-tracking-ui).
+
