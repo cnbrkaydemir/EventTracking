@@ -1,6 +1,6 @@
 # General Information About EventTracking Project  
 
-Back-end side of the EventTracking app is called EventTracking. EventTracking app is an app for managing events, creating new events and managing event-user interaction,so we can say it resembles various event-managment apps like Google calendar. The architecture of the app is SOA(Server Oriented Architecture) so  angular is responsible for the front-end which runs on server a  and Java Spring is responsible for the back-end side and interacting with databases on server b. These two servers work together to make everything better. Also the app uses PostgresSql as RDBMS and depends on multiple tables like events,users and authorities and all these tables have relationships between them .
+Back-end side of the EventTracking app is called EventTracking. EventTracking app is an app for managing events, creating new events and managing event-user interaction,so we can say it resembles various event-managment apps like Google calendar. The architecture of the app is SOA(Server Oriented Architecture) so  angular is responsible for the front-end which runs on server x  and Java Spring is responsible for the back-end side and interacting with databases on server y. These two servers work together to make everything better. Also the app uses PostgresSql as RDBMS and depends on multiple tables like events,users and authorities and all these tables have relationships between them .
  
  # Back-End Overview
 
