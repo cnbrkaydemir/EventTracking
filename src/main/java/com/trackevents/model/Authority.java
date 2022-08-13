@@ -1,10 +1,15 @@
 package com.trackevents.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "authorities")
+@Getter
+@Setter
 public class Authority {
 
     @Id
@@ -27,30 +32,6 @@ public class Authority {
 
     public Authority(){
 
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Users getUser() {
-        return this.users;
-    }
-
-    public void setCustomer(Users users) {
-        this.users = users;
     }
 }
 

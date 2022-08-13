@@ -1,7 +1,12 @@
 package com.trackevents.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.sql.Date;
 
+@Getter
+@Setter
 public class EventInfo {
 
     private String title;
@@ -19,35 +24,4 @@ public class EventInfo {
         this.eventExpire=eventExpire;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public long getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(int dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Date getEventExpire() {
-        return eventExpire;
-    }
-
-    public void setEventExpire(Date eventExpire) {
-        this.eventExpire = eventExpire;
-    }
-}
+   }

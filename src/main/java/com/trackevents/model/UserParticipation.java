@@ -1,5 +1,10 @@
 package com.trackevents.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class UserParticipation {
     private String name;
     private int id;
@@ -13,35 +18,4 @@ public class UserParticipation {
         this.userParticipation = userParticipation;
     }
 
-    public String getName() {
-        return name;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getAverageParticipation() {
-        return averageParticipation;
-    }
-
-    public void setAverageParticipation(int averageParticipation) {
-        this.averageParticipation = averageParticipation;
-    }
-
-    public int getUserParticipation() {
-        return userParticipation;
-    }
-
-    public void setUserParticipation(int userParticipation) {
-        this.userParticipation = userParticipation;
-    }
-}
