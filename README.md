@@ -51,10 +51,8 @@ FOREIGN KEY (user_id) REFERENCES users (user_id),
 Foreign Key (event_id) REFERENCES events(event_id)    
 );
 
-## Admin generation code
-Update authorities set name='ROLE_ADMIN' where user_id=x;
 
+##Front-End
 
-
-You can also view the front-end project [event-tracking-ui](https://github.com/cnbrkaydemir/event-tracking-ui).
+View the front-end project [event-tracking-ui](https://github.com/cnbrkaydemir/event-tracking-ui).
 
