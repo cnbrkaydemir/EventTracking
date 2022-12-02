@@ -52,7 +52,7 @@ Foreign Key (event_id) REFERENCES events(event_id)
 );
 
 
-##Front-End
+## Front-End
 
 View the front-end project [event-tracking-ui](https://github.com/cnbrkaydemir/event-tracking-ui).
 
