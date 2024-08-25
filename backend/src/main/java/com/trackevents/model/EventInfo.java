@@ -1,12 +1,14 @@
 package com.trackevents.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class EventInfo {
 
     private String title;

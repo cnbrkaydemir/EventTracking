@@ -1,63 +1,20 @@
 package com.trackevents.service;
 
 import com.trackevents.model.Events;
-import com.trackevents.model.Users;
-import com.trackevents.repository.EventRepository;
-import com.trackevents.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.util.List;
 
-@Service
-public class EventService {
+public interface EventService {
 
-private final EventRepository eventRepository;
+    public void setExpired();
 
-    private final UserRepository userRepository;
+    public void saveEvent(Events event);
 
-@Autowired
-    public EventService(EventRepository eventRepository,UserRepository userRepository){
-    this.userRepository=userRepository;
-    this.eventRepository=eventRepository;
-}
+    public void addUsers(int eventId,int userId);
 
-public void setExpired(){
-List<Events> events=eventRepository.findAll();
-    long millis=System.currentTimeMillis();
-    Date date= new Date(millis);
+    public void discardUsers(int eventId,int userId);
 
-    events.forEach((event)->{
-        event.setExpired(event.getEventExpired().compareTo(date) < 0);
-    });
+    public List<Events> getAllEvents();
 
-}
-
-    public void createEvent(Events event){
-        eventRepository.save(event);
-    }
-
-    public void addUsers(int eventId,int userId){
-        Events currentEvent=eventRepository.findByEventId(eventId);
-        Users targetUser= userRepository.findByUserId(userId);
-        currentEvent.getParticipants().add(targetUser);
-
-    }
-
-    public void discardUsers(int eventId,int userId){
-        Events currentEvent=eventRepository.findByEventId(eventId);
-        Users targetUser= userRepository.findByUserId(userId);
-        currentEvent.getParticipants().remove(targetUser);
-    }
-
-   public List<Events> getAllEvents(){
-    return eventRepository.findAll();
-   }
-
-   public Events findById(int id){
-    return eventRepository.findByEventId(id);
-   }
-
-
+    public Events findById(int id);
 }

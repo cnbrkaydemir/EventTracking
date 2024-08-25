@@ -3,7 +3,9 @@ package com.trackevents.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -18,6 +20,8 @@ import java.util.Set;
 @Table(name="users")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Users {
 
     @Id
@@ -50,7 +54,7 @@ public class Users {
     @NotBlank
     private String userRole;
 
-@JsonIgnore
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(name = "participation",
             joinColumns = {
@@ -61,24 +65,11 @@ public class Users {
 
 
 
-@JsonIgnore
+
     @OneToMany(mappedBy="users",fetch=FetchType.EAGER)
     private Set<Authority> authorities;
 
 
-    public Users(){
-
-    }
-
-
-    public Users(int userId, String userName, String userSurname, String userEmail, String userPassword, String role) {
-        this.userId = userId;
-        this.userName = userName;
-        this.userSurname = userSurname;
-        this.userEmail = userEmail;
-        this.userPassword = userPassword;
-        this.userRole = role;
-    }
 
 
 }

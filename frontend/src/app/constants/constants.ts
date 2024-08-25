@@ -1,5 +1,5 @@
 export const  AppConstants = {
-    CREATE_EVENT_API_URL : "/createEvent",
+    CREATE_EVENT_API_URL : "/saveEvent",
     LOGIN_API_URL : "/user",
     ADD_USER_API_URL : "/addUser",
     DISCARD_USER_API_URL : "/discardUser",
@@ -13,8 +13,8 @@ export const  AppConstants = {
     DISPLAY_MONTH_API_URL:"/getParticipationMonth",
     DISPLAY_UPCOMING_API_URL:"/getUpcomingEvents",
     GRANT_ADMIN_API_URL: "/grantAdmin",
-    
 
 
-    
+
+
 }

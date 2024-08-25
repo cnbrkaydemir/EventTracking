@@ -1,6 +1,7 @@
 package com.trackevents.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "authorities")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Authority {
 
     @Id
@@ -30,8 +32,5 @@ public class Authority {
         this.users = users;
     }
 
-    public Authority(){
-
-    }
 }
 

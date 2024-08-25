@@ -1,13 +1,14 @@
 package com.trackevents.controller;
 
 
+import com.trackevents.dto.ParticipationDto;
 import com.trackevents.model.EventInfo;
 import com.trackevents.model.Events;
-import com.trackevents.model.UserDto;
+import com.trackevents.dto.UserDto;
 import com.trackevents.model.Users;
 import com.trackevents.service.EventService;
 import com.trackevents.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -16,54 +17,51 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 public class EventsController {
 
     private final EventService eventService;
 
-    private final UserService usv;
+    private final UserService userService;
 
-    @Autowired
-    public EventsController(EventService evs, UserService usv) {
-        this.eventService = evs;
-        this.usv = usv;
-    }
 
     @PostMapping("/createEvent")
     public Events createEvent(@RequestBody Events event) {
-        Users adminUser = usv.getByEmail(event.getCreated_by().getUserEmail());
+        Users adminUser = userService.getByEmail(event.getCreated_by().getUserEmail());
         event.setCreated_by(adminUser);
         event.getParticipants().add(adminUser);
         adminUser.getEvents().add(event);
-        eventService.createEvent(event);
+        eventService.saveEvent(event);
         return event;
     }
 
     @PostMapping("/addUser")
-    public Events addUsers(@RequestBody UserDto info) {
+    public Events addUsers(@RequestBody ParticipationDto info) {
         Events event = eventService.findById(info.getEventId());
 
-        info.getUserIds().forEach((id) -> {
-            Users participant = usv.getById(id);
+        info.getUsers().forEach((userDto) -> {
+            Users participant = userService.getById(userDto.getUserId());
             participant.getEvents().add(event);
             event.getParticipants().add(participant);
             List<Users> u = event.getParticipants();
-            eventService.createEvent(event);
         });
+
+        eventService.saveEvent(event);
 
         return event;
     }
 
     @PostMapping("/discardUser")
-    public Events discardUsers(@RequestBody UserDto info) {
+    public Events discardUsers(@RequestBody ParticipationDto info) {
         Events event = eventService.findById(info.getEventId());
 
-        info.getUserIds().forEach((id) -> {
-            Users participant = usv.getById(id);
+        info.getUsers().forEach((userDto) -> {
+            Users participant = userService.getById(userDto.getUserId());
             event.getParticipants().remove(participant);
             participant.getEvents().remove(event);
         });
 
-        eventService.createEvent(event);
+        eventService.saveEvent(event);
 
         return event;
     }
@@ -71,17 +69,12 @@ public class EventsController {
     @PostMapping("/displayEvents")
     public List<Events> displayEvents(@RequestBody int id) {
         eventService.setExpired();
-        Users target = usv.getById(id);
+        Users target = userService.getById(id);
         List<Events> listWithoutDuplicates = target.getEvents();
-        List<Events> events = listWithoutDuplicates.stream()
+
+        return listWithoutDuplicates.stream()
                 .distinct()
                 .collect(Collectors.toList());
-
-        if (events != null) {
-            return events;
-        } else {
-            return null;
-        }
     }
 
     @GetMapping("/displayAllEvents")
@@ -122,13 +115,12 @@ public class EventsController {
         cal.setTime(new Date());
         int month = cal.get(Calendar.MONTH);
 
-        Users u = usv.getById(id);
+        Users u = userService.getById(id);
 
         List<Events> listWithoutDuplicates = u.getEvents();
         List<Events> events = listWithoutDuplicates.stream()
                 .distinct()
-                .collect(Collectors.toList());
-
+                .toList();
 
         events.forEach((event -> {
             cal.setTime(event.getEventDate());
@@ -144,7 +136,6 @@ public class EventsController {
                     i4.incrementAndGet();
                 }
             }
-
 
         }));
         List<Integer> data = new ArrayList<>();
@@ -162,7 +153,7 @@ public class EventsController {
     @PostMapping("/displayAbsent")
     public List<Users> displayAbsent(@RequestBody int id) {
         Events event = eventService.findById(id);
-        List<Users> users = usv.getAllUsers();
+        List<Users> users = userService.getAllUsers();
         List<Users> absents = new ArrayList<>();
 
         users.forEach((users1 -> {
@@ -178,7 +169,7 @@ public class EventsController {
     @PostMapping("/getUpcomingEvents")
     public List<EventInfo> getUpcoming(@RequestBody int id) {
         eventService.setExpired();
-        Users target = usv.getById(id);
+        Users target = userService.getById(id);
 
         List<Events> all = target.getEvents();
 
@@ -204,7 +195,7 @@ public class EventsController {
         });
     List<Events> upcoming= upcomings.stream()
         .distinct()
-        .collect(Collectors.toList());
+        .toList();
 
     List<EventInfo> eventInfo= new ArrayList<>();
 
@@ -228,10 +219,9 @@ public class EventsController {
     }
 
     private long calculateDifference(Date d1,Date d2){
-        long diffInMillies = Math.abs(d1.getTime() - d2.getTime());
-        long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        long diffInMillis = Math.abs(d1.getTime() - d2.getTime());
 
-        return diff;
+        return TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
     }
 
 }
