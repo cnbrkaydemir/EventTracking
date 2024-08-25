@@ -1,0 +1,108 @@
+<div class="header bg-gradient-danger py-7 py-lg-8">
+  <div class="container">
+    <div class="header-body text-center mb-7">
+      <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-6">
+          <h1 class="text-white">Add New Users</h1>
+          <p class="text-lead text-light">Add as many users as you want via the checkboxes</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="separator separator-bottom separator-skew zindex-100">
+    <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
+    </svg>
+  </div>
+</div>
+
+  <!-- Page content -->
+  <form role="form" [formGroup]="form" (ngSubmit)="submit()">
+
+  <div class="container-fluid mt--7">
+    <div class="row">
+      <div class="col">
+        <div class="card shadow">
+          <div class="card-header border-0">
+            <h3 class="mb-0">Users table</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                    <th scope="col">Add User</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Surname</th>
+                    <th scope="col">Email</th>
+                    <th scope="col"></th>
+                    
+                </tr>
+              </thead>
+              <tbody *ngIf="allUsers.length!=0">
+                
+                <tr *ngFor="let user of allUsers">
+                  <th scope="row">
+                    <input type="checkbox" id="{{user.userId}}" name="user" value="{{user.userId}}" formArrayName="selectedUsers" 
+                    (change)="onCheckboxChange($event)" >
+                  </th>
+
+                  <td>
+                    <div class="media align-items-center">
+                      <a href="javascript:void(0)" class="avatar rounded-circle mr-3">
+                        <img alt="Image placeholder" src="../assets/img/theme/react.jpg">
+                      </a>
+                      <div class="media-body">
+                        <span class="mb-0 text-sm">{{user.userName}}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    {{user.userSurname}}
+                  </td>
+
+                  <td>
+                    {{user.userEmail}}
+                  </td>
+                  <td>
+                  
+                  </td>
+                </tr>
+              
+              </tbody>
+
+              <tbody *ngIf="allUsers.length===0">
+                <tr>
+                  <th scope="row" >
+                    <h1 class="text-dark bg-transparent">
+                    No user available to add to the meeting!
+                  </h1>
+                  </th>
+                </tr>
+              </tbody>
+
+            </table>
+          </div>
+          <div class="card-footer py-4">
+            <div class="row justify-content-md-center">
+                <div class="col-sm-6">
+
+                  <button *ngIf="allUsers.length!=0"  class="btn btn-danger" type="submit">
+                    Submit
+                  </button>
+
+                  <button *ngIf="allUsers.length===0"  class="btn btn-danger" [routerLink]="['/event-list']">
+                    Dissmiss
+                  </button>
+
+                </div>
+              </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+  </div>
+  
+</form>

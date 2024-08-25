@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  
+</head>
+<body>
+  <div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+        <!-- Card stats -->
+        <div class="row">
+          <div class="col-xl-6 col-lg-8">
+            <div class="card card-stats mb-4 mb-xl-0">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col">
+                    <a [routerLink]="['/event-list']">
+                    <h5 class="card-title text-uppercase text-muted mb-0">Active Meetings</h5>
+                    <span class="h2 font-weight-bold mb-0">{{upcomingMeeting}}</span>
+                    </a>
+                  </div>
+                  <div class="col-auto">
+                    <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+                      <i class="fas fa-chart-bar"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-6 col-lg-8">
+            <div class="card card-stats mb-4 mb-xl-0">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col">
+                    <a [routerLink]="['/event-list']">
+                    <h5 class="card-title text-uppercase text-muted mb-0">Past Meetings</h5>
+                    <span class="h2 font-weight-bold mb-0">{{PastMeeting}}</span>
+                  </a>
+                  </div>
+                  <div class="col-auto">
+                    <div class="icon icon-shape bg-info text-white rounded-circle shadow">
+                      <i class="fas fa-chart-bar"></i>
+                    </div>
+                  </div>
+                </div>
+                
+                
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid mt--7">
+    <div class="row">
+      <div class="col-xl-8 mb-5 mb-xl-0">
+        <div class="card bg-default shadow">
+          <div class="card-header bg-transparent border-0">
+            <h3 class="text-white mb-0">Upcoming Events</h3>
+          </div>
+          <div class="table-responsive mb-5">
+            <table class="table align-items-center table-dark table-flush">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Title</th>
+                  <th scope="col">End Date</th>
+                  <th scope="col">Due</th>
+                  <th scope="col">Event</th>
+                  
+                
+                </tr>
+              </thead>
+              <tbody *ngIf="upcomingEvents.length!=0">
+                <tr *ngFor="let event of upcomingEvents">
+                  <th scope="row">
+                    <div class="media-body">
+                      <span class="mb-0 text-sm">{{event.title}}</span>
+                    </div>
+                  
+                  </th>
+                  <td >
+                    {{event.eventExpire}}
+                  </td>
+                  <td >
+                    <span class="badge badge-dot mr-4">
+                      {{event.dueDate}} days
+                    </span>
+                  </td>
+                  <td >
+                    <a routerLinkActive="active" [routerLink]="['/event',event.id]" class="nav-link">
+                      <i class="ni ni-album-2"></i>
+                  </a>
+                      </td>
+                  
+                </tr>
+                </tbody>
+
+                <tbody *ngIf="upcomingEvents.length===0">
+                  <tr>
+                    <th scope="row" >
+                      <h1 class="text-light bg-transparent">
+                      You are currently not participating in any event
+                    </h1>
+                    </th>
+                  </tr>
+                </tbody>
+
+            </table>
+          </div>
+          
+  
+        </div>
+      </div>
+      <div class="col-xl-4">
+        <div class="card shadow">
+          <div class="card-header bg-transparent">
+            <div class="row align-items-center">
+              <div class="col">
+                <h6 class="text-uppercase text-muted ls-1 mb-1">Event Preview</h6>
+                <h2 class="mb-0">Events by Months</h2>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- Chart -->
+            <div class="chart">
+              <canvas id="chart-orders" class="chart-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-xl-8 mb-5 mb-xl-0">
+        <div class="card shadow">
+          <div class="card-header border-0">
+            <div class="row align-items-center">
+              <div class="col">
+                <h3 class="mb-0">Most Popular Events</h3>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <!-- Projects table -->
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">Event Title</th>
+                  <th scope="col">Event Owner</th>
+                  <th scope="col">Participants</th>
+                  <th scope="col">Event</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let event of allEvents">
+                  <th scope="row">
+                    {{event.eventTitle}}
+                  </th>
+                  <td>
+                    {{event.created_by.userName+" "+event.created_by.userSurname}}
+                  </td>
+                  <td class="text-center">
+                    {{event.participants.length}}
+                  </td>
+                  <td>
+                    <a routerLinkActive="active" [routerLink]="['/event',event.eventId]" class="nav-link">
+                  <i class="ni ni-album-2"></i>
+              </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-4">
+        <div class="card shadow">
+          <div class="card-header border-0">
+            <div class="row align-items-center">
+              <div class="col">
+                <h3 class="mb-0">Most Active Users</h3>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <!-- Projects table -->
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">User</th>
+                  <th scope="col">Participation</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let info of userInfos">
+                  <th scope="row">
+                    <a *ngIf="user.userId != info.id" [routerLink]="['/profile',info.id]">
+                    {{info.name}}
+                  </a>
+                  <a *ngIf="user.userId === info.id" [routerLink]="['/user-profile']">
+                    {{info.name}}
+                  </a>
+                  </th>
+                  <td class="text-center">
+                    {{info.userParticipation}}
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <span class="mr-2">{{info.averageParticipation}}%</span>
+                      <div>
+                        <div class="progress">
+                          <div class="progress-bar bg-gradient-danger" role="progressbar" aria-valuenow="{{info.averageParticipation}}" aria-valuemin="0" aria-valuemax="100" [ngStyle]="{'width':info.averageParticipation+'%'}"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+  
+  </div>
+    
+</body>
+</html>
+
+
+
+
