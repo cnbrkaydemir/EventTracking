@@ -24,4 +24,6 @@ public class EventDto {
 
     private Date eventExpired;
 
+    private int createdId;
+
 }

@@ -1,5 +1,7 @@
 package com.trackevents.service;
 
+import com.trackevents.dto.EventDto;
+import com.trackevents.dto.ParticipationDto;
 import com.trackevents.model.Events;
 
 import java.util.List;
@@ -8,13 +10,15 @@ public interface EventService {
 
     public void setExpired();
 
-    public void saveEvent(Events event);
+    public EventDto saveEvent(Events event);
 
-    public void addUsers(int eventId,int userId);
+    public EventDto createEvent(Events event);
 
-    public void discardUsers(int eventId,int userId);
+    public EventDto addUsers(ParticipationDto info);
 
-    public List<Events> getAllEvents();
+    public EventDto discardUsers(ParticipationDto info);
 
-    public Events findById(int id);
+    public List<EventDto> getAllEvents();
+
+    public EventDto findById(int id);
 }

@@ -1,6 +1,7 @@
 package com.trackevents.controller;
 
 
+import com.trackevents.dto.EventDto;
 import com.trackevents.dto.ParticipationDto;
 import com.trackevents.model.EventInfo;
 import com.trackevents.model.Events;
@@ -9,6 +10,7 @@ import com.trackevents.model.Users;
 import com.trackevents.service.EventService;
 import com.trackevents.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -25,51 +27,26 @@ public class EventsController {
     private final UserService userService;
 
 
-    @PostMapping("/createEvent")
-    public Events createEvent(@RequestBody Events event) {
-        Users adminUser = userService.getByEmail(event.getCreated_by().getUserEmail());
-        event.setCreated_by(adminUser);
-        event.getParticipants().add(adminUser);
-        adminUser.getEvents().add(event);
-        eventService.saveEvent(event);
-        return event;
+    @PostMapping("/create")
+    public ResponseEntity<EventDto> createEvent(@RequestBody Events event) {
+
+        return ResponseEntity.ok(eventService.createEvent(event));
     }
 
     @PostMapping("/addUser")
-    public Events addUsers(@RequestBody ParticipationDto info) {
-        Events event = eventService.findById(info.getEventId());
-
-        info.getUsers().forEach((userDto) -> {
-            Users participant = userService.getById(userDto.getUserId());
-            participant.getEvents().add(event);
-            event.getParticipants().add(participant);
-            List<Users> u = event.getParticipants();
-        });
-
-        eventService.saveEvent(event);
-
-        return event;
+    public ResponseEntity<EventDto> addUsers(@RequestBody ParticipationDto info) {
+        return ResponseEntity.ok(eventService.addUsers(info));
     }
 
     @PostMapping("/discardUser")
-    public Events discardUsers(@RequestBody ParticipationDto info) {
-        Events event = eventService.findById(info.getEventId());
-
-        info.getUsers().forEach((userDto) -> {
-            Users participant = userService.getById(userDto.getUserId());
-            event.getParticipants().remove(participant);
-            participant.getEvents().remove(event);
-        });
-
-        eventService.saveEvent(event);
-
-        return event;
+    public ResponseEntity<EventDto> discardUsers(@RequestBody ParticipationDto info) {
+        return ResponseEntity.ok(eventService.discardUsers(info));
     }
 
-    @PostMapping("/displayEvents")
-    public List<Events> displayEvents(@RequestBody int id) {
+    @PostMapping("/event")
+    public ResponseEntity<List<EventDto>> displayEvents(@RequestBody int id) {
         eventService.setExpired();
-        Users target = userService.getById(id);
+        Users target = user.getById(id);
         List<Events> listWithoutDuplicates = target.getEvents();
 
         return listWithoutDuplicates.stream()
@@ -77,7 +54,7 @@ public class EventsController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/displayAllEvents")
+    @GetMapping("/events")
     public List<Events> displayEvents() {
         eventService.setExpired();
         List<Events> events = eventService.getAllEvents();
@@ -103,7 +80,7 @@ public class EventsController {
         }
     }
 
-    @PostMapping("/getParticipationMonth")
+    @PostMapping("/month")
     public List<Integer> getMonth(@RequestBody int id) {
         AtomicInteger i1 = new AtomicInteger(0);
         AtomicInteger i2 = new AtomicInteger(0);
@@ -150,7 +127,7 @@ public class EventsController {
     }
 
 
-    @PostMapping("/displayAbsent")
+    @PostMapping("/absent")
     public List<Users> displayAbsent(@RequestBody int id) {
         Events event = eventService.findById(id);
         List<Users> users = userService.getAllUsers();
@@ -166,7 +143,7 @@ public class EventsController {
 
     }
 
-    @PostMapping("/getUpcomingEvents")
+    @PostMapping("/upcoming")
     public List<EventInfo> getUpcoming(@RequestBody int id) {
         eventService.setExpired();
         Users target = userService.getById(id);
