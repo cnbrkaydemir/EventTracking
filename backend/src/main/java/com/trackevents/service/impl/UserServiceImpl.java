@@ -10,7 +10,7 @@ import com.trackevents.repository.UserRepository;
 import com.trackevents.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -25,13 +25,11 @@ public class UserServiceImpl implements UserService {
 
     private final AuthorityRepository auth;
 
-    private final PasswordEncoder passwordEncoder;
 
     private final ModelMapper modelMapper;
 
     @Override
     public UserDto createUser(Users user){
-        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
         user.setUserRole("user");
         Authority userAuthority= new Authority("ROLE_USER",user);
 
