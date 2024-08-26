@@ -23,7 +23,7 @@ public class UsersController {
 
     private final UserService userService;
 
-    private final EventService evs;
+    private final EventService eventService;
 
 
 
@@ -46,7 +46,7 @@ public class UsersController {
 
     @PostMapping(path = "/events")
     public ResponseEntity<EventDto> displayAll(@RequestBody int id) {
-        return ResponseEntity.ok(evs.findById(id));
+        return ResponseEntity.ok(eventService.findById(id));
     }
 
     @PostMapping(path = "/admin")
