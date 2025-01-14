@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService {
 
     private final AuthorityRepository auth;
 
-
     private final ModelMapper modelMapper;
 
     @Override

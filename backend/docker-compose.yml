@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+
+  app:
+    image: cnbrkaydemir/event:latest
+    build:
+      context: .
+    container_name: eventApp
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_USER=cnbrkaydemir
+      - POSTGRES_PASSWORD=password
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/events
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+    ports:
+      - 8080:8080
+
+  db:
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: cnbrkaydemir
+      POSTGRES_DB: events

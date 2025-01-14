@@ -114,48 +114,32 @@ private  final ModelMapper modelMapper;
 
     @Override
     public List<Integer> calculateMonth(int userId) {
-        AtomicInteger i1 = new AtomicInteger(0);
-        AtomicInteger i2 = new AtomicInteger(0);
-        AtomicInteger i3 = new AtomicInteger();
-        AtomicInteger i4 = new AtomicInteger();
+        AtomicInteger[] monthCounts = {new AtomicInteger(0), new AtomicInteger(0), new AtomicInteger(0), new AtomicInteger(0)};
 
-
+        // Get the current month
         Calendar cal = Calendar.getInstance();
-        cal.setTime(new java.util.Date());
-        int month = cal.get(Calendar.MONTH);
+        int currentMonth = cal.get(Calendar.MONTH);
 
-        Users u = userRepository.findByUserId(userId);
+        // Fetch user and their distinct events
+        Users user = userRepository.findByUserId(userId);
+        List<Events> events = user.getEvents().stream().distinct().toList();
 
-        List<Events> listWithoutDuplicates = u.getEvents();
-        List<Events> events = listWithoutDuplicates.stream()
-                .distinct()
-                .toList();
-
-        events.forEach((event -> {
+        // Count events for the current month and the next three months
+        events.forEach(event -> {
             cal.setTime(event.getEventDate());
-            int startMonth = cal.get(Calendar.MONTH);
-            if (startMonth == month || startMonth == month + 1 || startMonth == month + 2 || startMonth == month + 3) {
-                if (startMonth == month) {
-                    i1.incrementAndGet();
-                } else if (startMonth == month + 1) {
-                    i2.incrementAndGet();
-                } else if (startMonth == month + 2) {
-                    i3.incrementAndGet();
-                } else if (startMonth == month + 3) {
-                    i4.incrementAndGet();
-                }
+            int eventMonth = cal.get(Calendar.MONTH);
+
+            // Calculate the month difference (handle overflow with modulo 12)
+            int monthDifference = (eventMonth - currentMonth + 12) % 12;
+            if (monthDifference >= 0 && monthDifference <= 3) {
+                monthCounts[monthDifference].incrementAndGet();
             }
+        });
 
-        }));
-        List<Integer> data = new ArrayList<>();
-        data.add(i1.get());
-        data.add(i2.get());
-        data.add(i3.get());
-        data.add(i4.get());
-
-
-        return data;
-
+        // Convert counts to a list of integers
+        return Arrays.stream(monthCounts)
+                .map(AtomicInteger::get)
+                .toList();
     }
 
 
