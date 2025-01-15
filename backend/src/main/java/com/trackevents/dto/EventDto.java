@@ -1,6 +1,7 @@
 package com.trackevents.dto;
 
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,5 +28,5 @@ public class EventDto {
 
     private int createdId;
 
-    private List<UserDto> attendee;
+    private List<UserDto> participants;
 }

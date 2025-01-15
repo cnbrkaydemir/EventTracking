@@ -23,6 +23,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final EventRepository eventRepository;
+
     private final AuthorityRepository auth;
 
     private final ModelMapper modelMapper;
@@ -35,7 +37,6 @@ public class UserServiceImpl implements UserService {
         Set<Authority> userAuthorities= new HashSet<>();
         userAuthorities.add(userAuthority);
         user.setAuthorities(userAuthorities);
-        auth.save(userAuthority);
         return modelMapper.map(userRepository.save(user), UserDto.class);
     }
 
@@ -50,8 +51,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getEventUser(Events events){
-        return userRepository.findByEvents(events).stream().map((user)-> modelMapper.map(user, UserDto.class)).toList();
+    public List<UserDto> getEventUser(int eventId){
+        return eventRepository.findByEventId(eventId).getParticipants().stream().map((user)-> modelMapper.map(user, UserDto.class)).toList();
     }
 
     @Override

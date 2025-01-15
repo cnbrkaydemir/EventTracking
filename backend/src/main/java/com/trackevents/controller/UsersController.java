@@ -29,25 +29,25 @@ public class UsersController {
         return ResponseEntity.ok(userService.createUser(user));
     }
 
-    @GetMapping(path = "/user")
-    public ResponseEntity<UserDto> displayUser(@RequestBody int id){
+    @GetMapping(path = "/user/{id}")
+    public ResponseEntity<UserDto> displayUser(@PathVariable int id){
         return ResponseEntity.ok(userService.getById(id));
     }
 
 
-    @GetMapping(path = "/users")
-    public ResponseEntity<List<UserDto>> displayAll(){
+    @GetMapping(path = "/user")
+    public ResponseEntity<List<UserDto>> displayAllUsers(){
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
 
-    @GetMapping(path = "/userEvents")
-    public ResponseEntity<EventDto> displayAll(@RequestBody int id) {
-        return ResponseEntity.ok(eventService.findById(id));
+    @GetMapping(path = "/eventUser/{id}")
+    public ResponseEntity<List<UserDto>> displayEventUsers(@PathVariable int id) {
+        return ResponseEntity.ok(userService.getEventUser(id));
     }
 
-    @PostMapping(path = "/admin")
-    public ResponseEntity<String> grantAdmin(@RequestBody int id){
+    @PostMapping(path = "/admin/{id}")
+    public ResponseEntity<String> grantAdmin(@PathVariable int id){
         userService.grantAdmin(id);
         return ResponseEntity.ok("Granted Admin Successfully");
     }

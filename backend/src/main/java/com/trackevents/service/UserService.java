@@ -14,7 +14,7 @@ public interface UserService {
 
     public List<UserDto> getAllUsers();
 
-    public List<UserDto> getEventUser(Events events);
+    public List<UserDto> getEventUser(int eventId);
 
     public UserDto getById(int id);
 

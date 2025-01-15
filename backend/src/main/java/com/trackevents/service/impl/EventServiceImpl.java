@@ -45,11 +45,10 @@ private  final ModelMapper modelMapper;
 
     @Override
     public EventDto createEvent(Events event){
-        Users adminUser = userRepository.findByUserEmail(event.getCreated_by().getUserEmail()).get(0);
+        Users adminUser = userRepository.findByUserId(event.getCreated_by().getUserId());
         event.setCreated_by(adminUser);
         event.getParticipants().add(adminUser);
         adminUser.getEvents().add(event);
-        eventRepository.save(event);
 
         return modelMapper.map(eventRepository.save(event), EventDto.class);
     }
@@ -162,13 +161,14 @@ private  final ModelMapper modelMapper;
     public List<EventDto> upcomingEvents(int userId) {
 
         this.setExpired();
+
         Users target = userRepository.findByUserId(userId);
 
         List<Events> userEvents = target.getEvents();
 
 
         userEvents.forEach(event ->{
-            if(!event.isExpired()){
+            if(event.isExpired()){
                 userEvents.remove(event);
             }
         });

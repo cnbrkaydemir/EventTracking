@@ -13,5 +13,7 @@ public interface UserRepository extends JpaRepository<Users,Integer> {
 
     List<Users> findByEvents(Events events);
 
+
+
     List<Users> findByUserEmail(String email);
 }
