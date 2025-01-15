@@ -63,8 +63,8 @@ private  final ModelMapper modelMapper;
     public EventDto addUsers(ParticipationDto info){
         Events event = eventRepository.findById(info.getEventId()).get();
 
-        info.getUsers().forEach((userDto) -> {
-            Users participant = userRepository.findByUserId(userDto.getUserId());
+        info.getUsers().forEach((userId) -> {
+            Users participant = userRepository.findByUserId(userId);
             participant.getEvents().add(event);
             event.getParticipants().add(participant);
             List<Users> u = event.getParticipants();
@@ -89,8 +89,8 @@ private  final ModelMapper modelMapper;
     public EventDto discardUsers(ParticipationDto info){
         Events event = eventRepository.findById(info.getEventId()).get();
 
-        info.getUsers().forEach((userDto) -> {
-            Users participant = userRepository.findByUserId(userDto.getUserId());
+        info.getUsers().forEach((userId) -> {
+            Users participant = userRepository.findByUserId(userId);
             event.getParticipants().remove(participant);
             participant.getEvents().remove(event);
         });

@@ -15,6 +15,7 @@ import java.util.*;
 
 
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class EventsController {
 
@@ -23,7 +24,7 @@ public class EventsController {
     private final UserService userService;
 
 
-    @PostMapping("/create")
+    @PostMapping("/event")
     public ResponseEntity<EventDto> createEvent(@RequestBody Events event) {
 
         return ResponseEntity.ok(eventService.createEvent(event));
@@ -39,7 +40,7 @@ public class EventsController {
         return ResponseEntity.ok(eventService.discardUsers(info));
     }
 
-    @PostMapping("/events/{id}")
+    @PostMapping("/event/{id}")
     public ResponseEntity<List<EventDto>> userEvents(@PathVariable int id) {
         return ResponseEntity.ok(eventService.getUserEvents(id));
     }
@@ -49,18 +50,18 @@ public class EventsController {
         return ResponseEntity.ok(eventService.getAllEvents());
     }
 
-    @PostMapping("/month")
+    @GetMapping("/month")
     public ResponseEntity<List<Integer>> getMonth(@RequestBody int id) {
        return ResponseEntity.ok(eventService.calculateMonth(id));
     }
 
 
-    @PostMapping("/absent")
+    @GetMapping("/absent")
     public ResponseEntity<List<UserDto>> displayAbsent(@RequestBody int id) {
         return ResponseEntity.ok(eventService.findAbsent(id));
     }
 
-    @PostMapping("/upcoming")
+    @GetMapping("/upcoming")
     public ResponseEntity<List<EventDto>> getUpcoming(@RequestBody int id) {
         return ResponseEntity.ok(eventService.upcomingEvents(id));
     }

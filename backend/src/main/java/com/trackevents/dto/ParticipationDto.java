@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ParticipationDto {
 
-    private List<UserDto> users;
+    private List<Integer> users;
 
     private int eventId;
 }

@@ -9,14 +9,12 @@ import com.trackevents.service.EventService;
 import com.trackevents.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class UsersController {
 
@@ -26,12 +24,12 @@ public class UsersController {
 
 
 
-    @PostMapping(path = "/register")
+    @PostMapping(path = "/user")
     public ResponseEntity<UserDto> register(@RequestBody Users user){
         return ResponseEntity.ok(userService.createUser(user));
     }
 
-    @PostMapping(path = "/user")
+    @GetMapping(path = "/user")
     public ResponseEntity<UserDto> displayUser(@RequestBody int id){
         return ResponseEntity.ok(userService.getById(id));
     }
@@ -43,7 +41,7 @@ public class UsersController {
     }
 
 
-    @PostMapping(path = "/events")
+    @GetMapping(path = "/userEvents")
     public ResponseEntity<EventDto> displayAll(@RequestBody int id) {
         return ResponseEntity.ok(eventService.findById(id));
     }
