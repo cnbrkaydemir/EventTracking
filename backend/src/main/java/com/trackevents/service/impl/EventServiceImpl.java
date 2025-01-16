@@ -12,6 +12,8 @@ import com.trackevents.repository.UserRepository;
 import com.trackevents.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -43,6 +45,7 @@ private  final ModelMapper modelMapper;
     }
 
     @Override
+    @CacheEvict(value = "event", allEntries = true)
     public EventDto createEvent(Events event){
         Users adminUser = userRepository.findByUserId(event.getCreated_by().getUserId())
                         .orElseThrow(() -> new UserNotFoundException(event.getCreated_by().getUserId()));
@@ -59,7 +62,9 @@ private  final ModelMapper modelMapper;
         return modelMapper.map(eventRepository.save(event), EventDto.class);
     }
 
+
     @Override
+    @CacheEvict(value = "event", allEntries = true)
     public EventDto addUsers(ParticipationDto info){
         Events event = eventRepository.findById(info.getEventId())
                         .orElseThrow(() -> new EventNotFoundException(info.getEventId()));
@@ -77,6 +82,7 @@ private  final ModelMapper modelMapper;
     }
 
     @Override
+    @Cacheable(value = "event")
     public List<EventDto> getUserEvents(int userId){
         this.setExpired();
         Users target = userRepository.findByUserId(userId)
@@ -90,6 +96,7 @@ private  final ModelMapper modelMapper;
     }
 
     @Override
+    @CacheEvict(value = "event", allEntries = true)
     public EventDto discardUsers(ParticipationDto info){
         Events event = eventRepository.findById(info.getEventId())
                 .orElseThrow(() -> new EventNotFoundException(info.getEventId()));
@@ -106,6 +113,7 @@ private  final ModelMapper modelMapper;
     }
 
     @Override
+    @Cacheable(value = "event")
     public List<EventDto> getAllEvents(){
        this.setExpired();
 
@@ -152,6 +160,7 @@ private  final ModelMapper modelMapper;
 
 
     @Override
+    @Cacheable(value = "event_user")
     public List<UserDto> findAbsent(int eventId) {
         Events event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(eventId));
@@ -169,6 +178,7 @@ private  final ModelMapper modelMapper;
     }
 
     @Override
+    @Cacheable(value = "event")
     public List<EventDto> upcomingEvents(int userId) {
 
         this.setExpired();

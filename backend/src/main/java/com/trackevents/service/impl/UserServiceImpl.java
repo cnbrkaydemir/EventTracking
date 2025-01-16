@@ -14,6 +14,8 @@ import com.trackevents.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -33,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
 
     @Override
+    @CacheEvict(value = "user", allEntries = true)
     public UserDto createUser(Users user){
 
         if(userRepository.findByUserEmail(user.getUserEmail()).isPresent()){
@@ -49,6 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "user")
     public UserDto getByEmail(String email){
         return modelMapper.map(userRepository.findByUserEmail(email)
                         .orElseThrow(() -> new EmailNotFoundException(email))
@@ -56,6 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "user")
     public List<UserDto> getAllUsers(){
         return userRepository.findAll()
                 .stream()
@@ -64,6 +69,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "event_user")
     public List<UserDto> getEventUser(int eventId){
         return eventRepository.findByEventId(eventId)
                 .orElseThrow(()-> new EventNotFoundException(eventId))
@@ -72,6 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "user")
     public UserDto getById(int id){
         return modelMapper.map(userRepository.findByUserId(id)
                 .orElseThrow(() -> new UserNotFoundException(id))
@@ -79,6 +86,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "user", allEntries = true)
     public void grantAdmin(int id) {
         Users newAdmin = userRepository.findByUserId(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
