@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "events")
 @Getter
 @Setter
-public class Events {
+public class Events extends BaseEntity{
 
  @Id
  @GeneratedValue(strategy= GenerationType.IDENTITY)

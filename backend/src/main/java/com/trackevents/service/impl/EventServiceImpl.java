@@ -16,7 +16,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -49,6 +49,10 @@ private  final ModelMapper modelMapper;
     public EventDto createEvent(Events event){
         Users adminUser = userRepository.findByUserId(event.getCreated_by().getUserId())
                         .orElseThrow(() -> new UserNotFoundException(event.getCreated_by().getUserId()));
+
+        event.setCreatedBy("admin");
+
+        event.setCreatedDate(new Date());
 
         event.setCreated_by(adminUser);
         event.getParticipants().add(adminUser);

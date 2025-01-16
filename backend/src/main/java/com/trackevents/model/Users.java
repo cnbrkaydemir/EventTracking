@@ -22,7 +22,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Users {
+public class Users extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)

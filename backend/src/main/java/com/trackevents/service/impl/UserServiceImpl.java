@@ -18,6 +18,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +43,12 @@ public class UserServiceImpl implements UserService {
             throw  new DuplicateUserException(user.getUserEmail());
         }
 
+        user.setCreatedBy("admin");
+
+        user.setCreatedDate(new Date());
+
         user.setUserRole("user");
+
         Authority userAuthority= new Authority("ROLE_USER",user);
 
         Set<Authority> userAuthorities= new HashSet<>();

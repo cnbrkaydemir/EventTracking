@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class UserDto extends BaseDto {
 
     private int userId;
 

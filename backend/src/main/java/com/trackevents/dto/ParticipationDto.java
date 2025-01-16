@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ParticipationDto {
+public class ParticipationDto extends BaseDto {
 
     private List<Integer> users;
 

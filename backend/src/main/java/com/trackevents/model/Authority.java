@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Authority {
+public class Authority extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
