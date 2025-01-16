@@ -1,8 +1,11 @@
 package com.trackevents.service.impl;
 
 import com.trackevents.dto.UserDto;
+import com.trackevents.exception.DuplicateUserException;
+import com.trackevents.exception.EmailNotFoundException;
+import com.trackevents.exception.EventNotFoundException;
+import com.trackevents.exception.UserNotFoundException;
 import com.trackevents.model.Authority;
-import com.trackevents.model.Events;
 import com.trackevents.model.Users;
 import com.trackevents.repository.AuthorityRepository;
 import com.trackevents.repository.EventRepository;
@@ -31,6 +34,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(Users user){
+
+        if(userRepository.findByUserEmail(user.getUserEmail()).isPresent()){
+            throw  new DuplicateUserException(user.getUserEmail());
+        }
+
         user.setUserRole("user");
         Authority userAuthority= new Authority("ROLE_USER",user);
 
@@ -42,27 +50,39 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getByEmail(String email){
-        return modelMapper.map(userRepository.findByUserEmail(email).get(0),UserDto.class);
+        return modelMapper.map(userRepository.findByUserEmail(email)
+                        .orElseThrow(() -> new EmailNotFoundException(email))
+                ,UserDto.class);
     }
 
     @Override
     public List<UserDto> getAllUsers(){
-        return userRepository.findAll().stream().map((user)-> modelMapper.map(user, UserDto.class)).toList();
+        return userRepository.findAll()
+                .stream()
+                .map((user)-> modelMapper.map(user, UserDto.class))
+                .toList();
     }
 
     @Override
     public List<UserDto> getEventUser(int eventId){
-        return eventRepository.findByEventId(eventId).getParticipants().stream().map((user)-> modelMapper.map(user, UserDto.class)).toList();
+        return eventRepository.findByEventId(eventId)
+                .orElseThrow(()-> new EventNotFoundException(eventId))
+                .getParticipants()
+                .stream().map((user)-> modelMapper.map(user, UserDto.class)).toList();
     }
 
     @Override
     public UserDto getById(int id){
-        return modelMapper.map(userRepository.findByUserId(id),UserDto.class);
+        return modelMapper.map(userRepository.findByUserId(id)
+                .orElseThrow(() -> new UserNotFoundException(id))
+                ,UserDto.class);
     }
 
     @Override
     public void grantAdmin(int id) {
-        Users newAdmin = userRepository.findByUserId(id);
+        Users newAdmin = userRepository.findByUserId(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
         newAdmin.setUserRole("admin");
         Authority newAuthority= new Authority("ROLE_ADMIN",newAdmin);
         newAdmin.getAuthorities().add(newAuthority);

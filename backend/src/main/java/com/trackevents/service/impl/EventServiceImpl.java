@@ -3,6 +3,8 @@ package com.trackevents.service.impl;
 import com.trackevents.dto.EventDto;
 import com.trackevents.dto.ParticipationDto;
 import com.trackevents.dto.UserDto;
+import com.trackevents.exception.EventNotFoundException;
+import com.trackevents.exception.UserNotFoundException;
 import com.trackevents.model.Events;
 import com.trackevents.model.Users;
 import com.trackevents.repository.EventRepository;
@@ -32,10 +34,7 @@ private  final ModelMapper modelMapper;
         long millis=System.currentTimeMillis();
         Date date= new Date(millis);
 
-        events.forEach((event)->{
-            event.setExpired(event.getEventExpired().compareTo(date) < 0);
-        });
-
+        events.forEach((event)-> event.setExpired(event.getEventExpired().compareTo(date) < 0));
     }
 
     @Override
@@ -45,7 +44,9 @@ private  final ModelMapper modelMapper;
 
     @Override
     public EventDto createEvent(Events event){
-        Users adminUser = userRepository.findByUserId(event.getCreated_by().getUserId());
+        Users adminUser = userRepository.findByUserId(event.getCreated_by().getUserId())
+                        .orElseThrow(() -> new UserNotFoundException(event.getCreated_by().getUserId()));
+
         event.setCreated_by(adminUser);
         event.getParticipants().add(adminUser);
         adminUser.getEvents().add(event);
@@ -60,13 +61,15 @@ private  final ModelMapper modelMapper;
 
     @Override
     public EventDto addUsers(ParticipationDto info){
-        Events event = eventRepository.findById(info.getEventId()).get();
+        Events event = eventRepository.findById(info.getEventId())
+                        .orElseThrow(() -> new EventNotFoundException(info.getEventId()));
 
         info.getUsers().forEach((userId) -> {
-            Users participant = userRepository.findByUserId(userId);
+            Users participant = userRepository.findByUserId(userId)
+                    .orElseThrow(() -> new UserNotFoundException(userId));
+
             participant.getEvents().add(event);
             event.getParticipants().add(participant);
-            List<Users> u = event.getParticipants();
         });
 
         return modelMapper.map(eventRepository.save(event), EventDto.class);
@@ -76,7 +79,9 @@ private  final ModelMapper modelMapper;
     @Override
     public List<EventDto> getUserEvents(int userId){
         this.setExpired();
-        Users target = userRepository.findByUserId(userId);
+        Users target = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
         List<Events> listWithoutDuplicates = target.getEvents();
 
         return listWithoutDuplicates.stream()
@@ -86,10 +91,13 @@ private  final ModelMapper modelMapper;
 
     @Override
     public EventDto discardUsers(ParticipationDto info){
-        Events event = eventRepository.findById(info.getEventId()).get();
+        Events event = eventRepository.findById(info.getEventId())
+                .orElseThrow(() -> new EventNotFoundException(info.getEventId()));
 
         info.getUsers().forEach((userId) -> {
-            Users participant = userRepository.findByUserId(userId);
+            Users participant = userRepository.findByUserId(userId)
+                    .orElseThrow(() -> new UserNotFoundException(userId));
+
             event.getParticipants().remove(participant);
             participant.getEvents().remove(event);
         });
@@ -100,11 +108,10 @@ private  final ModelMapper modelMapper;
     @Override
     public List<EventDto> getAllEvents(){
        this.setExpired();
+
        List<Events> events = eventRepository.findAll();
 
-       events.sort((o1, o2) -> {
-           return Integer.compare(o2.getParticipants().size(), o1.getParticipants().size());
-       });
+       events.sort((o1, o2) -> Integer.compare(o2.getParticipants().size(), o1.getParticipants().size()));
 
        return events.stream().map(event -> modelMapper.map(event, EventDto.class)).toList();
 
@@ -120,7 +127,9 @@ private  final ModelMapper modelMapper;
         int currentMonth = cal.get(Calendar.MONTH);
 
         // Fetch user and their distinct events
-        Users user = userRepository.findByUserId(userId);
+        Users user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
         List<Events> events = user.getEvents().stream().distinct().toList();
 
         // Count events for the current month and the next three months
@@ -130,7 +139,7 @@ private  final ModelMapper modelMapper;
 
             // Calculate the month difference (handle overflow with modulo 12)
             int monthDifference = (eventMonth - currentMonth + 12) % 12;
-            if (monthDifference >= 0 && monthDifference <= 3) {
+            if (monthDifference <= 3) {
                 monthCounts[monthDifference].incrementAndGet();
             }
         });
@@ -144,7 +153,9 @@ private  final ModelMapper modelMapper;
 
     @Override
     public List<UserDto> findAbsent(int eventId) {
-        Events event = eventRepository.findById(eventId).get();
+        Events event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException(eventId));
+
         List<Users> users = userRepository.findAll();
         List<Users> absents = new ArrayList<>();
 
@@ -162,7 +173,8 @@ private  final ModelMapper modelMapper;
 
         this.setExpired();
 
-        Users target = userRepository.findByUserId(userId);
+        Users target = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
         List<Events> userEvents = target.getEvents();
 

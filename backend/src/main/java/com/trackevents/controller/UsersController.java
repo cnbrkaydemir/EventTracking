@@ -1,10 +1,8 @@
 package com.trackevents.controller;
 
-import com.trackevents.dto.EventDto;
+
 import com.trackevents.dto.UserDto;
-import com.trackevents.model.Authority;
 import com.trackevents.model.Users;
-import com.trackevents.repository.AuthorityRepository;
 import com.trackevents.service.EventService;
 import com.trackevents.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +17,6 @@ import java.util.*;
 public class UsersController {
 
     private final UserService userService;
-
-    private final EventService eventService;
-
 
 
     @PostMapping(path = "/user")

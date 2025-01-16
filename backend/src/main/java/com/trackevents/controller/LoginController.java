@@ -1,7 +1,9 @@
 package com.trackevents.controller;
 
+import com.trackevents.exception.EmailNotFoundException;
 import com.trackevents.model.Users;
 import com.trackevents.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,20 +12,16 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class LoginController {
 
-    @Autowired
-    UserRepository userRepository;
 
-    @RequestMapping("/user")
+    private final UserRepository userRepository;
+
+    @RequestMapping("/api")
     public Users getUserDetailsAfterLogin(Principal user){
-        List<Users> users=userRepository.findByUserEmail(user.getName());
+        return userRepository.findByUserEmail(user.getName())
+                .orElseThrow(() -> new EmailNotFoundException(user.getName()));
 
-        if(users.size()>0){
-            return users.get(0);
-        }
-
-        else
-            return null;
     }
 }
