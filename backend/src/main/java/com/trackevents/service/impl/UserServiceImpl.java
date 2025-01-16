@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional
     @CacheEvict(value = "user", allEntries = true)
     public UserDto createUser(Users user){
 
@@ -58,6 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value = "user")
     public UserDto getByEmail(String email){
         return modelMapper.map(userRepository.findByUserEmail(email)
@@ -66,6 +69,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value = "user")
     public List<UserDto> getAllUsers(){
         return userRepository.findAll()
@@ -75,6 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value = "event_user")
     public List<UserDto> getEventUser(int eventId){
         return eventRepository.findByEventId(eventId)
@@ -84,6 +89,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value = "user")
     public UserDto getById(int id){
         return modelMapper.map(userRepository.findByUserId(id)
@@ -92,6 +98,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     @CacheEvict(value = "user", allEntries = true)
     public void grantAdmin(int id) {
         Users newAdmin = userRepository.findByUserId(id)

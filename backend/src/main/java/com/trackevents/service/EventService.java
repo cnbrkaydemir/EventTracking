@@ -9,25 +9,23 @@ import java.util.List;
 
 public interface EventService {
 
-    public void setExpired();
+    List<EventDto> getUserEvents(int userId);
 
-    public List<EventDto> getUserEvents(int userId);
+    List<Integer> calculateMonth(int userId);
 
-    public List<Integer> calculateMonth(int userId);
+    EventDto createEvent(Events event);
 
-    public EventDto saveEvent(Events event);
+    EventDto addUsers(ParticipationDto info);
 
-    public EventDto createEvent(Events event);
+    EventDto discardUsers(ParticipationDto info);
 
-    public EventDto addUsers(ParticipationDto info);
+    List<EventDto> getAllEvents();
 
-    public EventDto discardUsers(ParticipationDto info);
+    EventDto findById(int id);
 
-    public List<EventDto> getAllEvents();
+    List<UserDto>findAbsent(int eventId);
 
-    public EventDto findById(int id);
+    List<EventDto> upcomingEvents(int userId);
 
-    public List<UserDto>findAbsent(int eventId);
-
-    public List<EventDto> upcomingEvents(int userId);
+    void setExpired(Events event);
 }

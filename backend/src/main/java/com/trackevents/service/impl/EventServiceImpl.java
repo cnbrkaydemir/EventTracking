@@ -15,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.*;
@@ -30,21 +31,16 @@ private final UserRepository userRepository;
 
 private  final ModelMapper modelMapper;
 
-    @Override
-    public void setExpired(){
-        List<Events> events=eventRepository.findAll();
-        long millis=System.currentTimeMillis();
-        Date date= new Date(millis);
-
-        events.forEach((event)-> event.setExpired(event.getEventExpired().compareTo(date) < 0));
-    }
 
     @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = "event")
     public EventDto findById(int id){
         return modelMapper.map(eventRepository.findByEventId(id), EventDto.class);
     }
 
     @Override
+    @Transactional
     @CacheEvict(value = "event", allEntries = true)
     public EventDto createEvent(Events event){
         Users adminUser = userRepository.findByUserId(event.getCreated_by().getUserId())
@@ -54,6 +50,8 @@ private  final ModelMapper modelMapper;
 
         event.setCreatedDate(new Date());
 
+        this.setExpired(event);
+
         event.setCreated_by(adminUser);
         event.getParticipants().add(adminUser);
         adminUser.getEvents().add(event);
@@ -61,13 +59,9 @@ private  final ModelMapper modelMapper;
         return modelMapper.map(eventRepository.save(event), EventDto.class);
     }
 
-    @Override
-    public EventDto saveEvent(Events event){
-        return modelMapper.map(eventRepository.save(event), EventDto.class);
-    }
-
 
     @Override
+    @Transactional
     @CacheEvict(value = "event", allEntries = true)
     public EventDto addUsers(ParticipationDto info){
         Events event = eventRepository.findById(info.getEventId())
@@ -86,9 +80,10 @@ private  final ModelMapper modelMapper;
     }
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value = "event")
     public List<EventDto> getUserEvents(int userId){
-        this.setExpired();
+
         Users target = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -100,6 +95,7 @@ private  final ModelMapper modelMapper;
     }
 
     @Override
+    @Transactional
     @CacheEvict(value = "event", allEntries = true)
     public EventDto discardUsers(ParticipationDto info){
         Events event = eventRepository.findById(info.getEventId())
@@ -117,9 +113,9 @@ private  final ModelMapper modelMapper;
     }
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value = "event")
     public List<EventDto> getAllEvents(){
-       this.setExpired();
 
        List<Events> events = eventRepository.findAll();
 
@@ -131,6 +127,7 @@ private  final ModelMapper modelMapper;
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<Integer> calculateMonth(int userId) {
         AtomicInteger[] monthCounts = {new AtomicInteger(0), new AtomicInteger(0), new AtomicInteger(0), new AtomicInteger(0)};
 
@@ -164,12 +161,14 @@ private  final ModelMapper modelMapper;
 
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value = "event_user")
     public List<UserDto> findAbsent(int eventId) {
         Events event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(eventId));
 
         List<Users> users = userRepository.findAll();
+
         List<Users> absents = new ArrayList<>();
 
         users.forEach((users1 -> {
@@ -182,10 +181,9 @@ private  final ModelMapper modelMapper;
     }
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value = "event")
     public List<EventDto> upcomingEvents(int userId) {
-
-        this.setExpired();
 
         Users target = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -209,5 +207,13 @@ private  final ModelMapper modelMapper;
                 .toList();
 
     }
+
+    @Override
+    public void setExpired(Events event){
+        long millis=System.currentTimeMillis();
+        Date date= new Date(millis);
+        event.setExpired(event.getEventExpired().compareTo(date) < 0);
+    }
+
 
 }
