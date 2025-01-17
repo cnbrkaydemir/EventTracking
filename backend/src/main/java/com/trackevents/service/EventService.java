@@ -11,7 +11,7 @@ public interface EventService {
 
     List<EventDto> getUserEvents(int userId);
 
-    List<Integer> calculateMonth(int userId);
+    List<Integer> calculateMonthlyDistribution(int userId);
 
     EventDto createEvent(Events event);
 

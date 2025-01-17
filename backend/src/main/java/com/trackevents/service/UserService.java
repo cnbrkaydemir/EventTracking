@@ -8,16 +8,15 @@ import java.util.List;
 
 public interface UserService {
 
-    public UserDto createUser(Users user);
+    UserDto createUser(Users user);
 
-    public UserDto getByEmail(String email);
+    UserDto createAdmin(Users user);
 
-    public List<UserDto> getAllUsers();
+    List<UserDto> getAllUsers();
 
-    public List<UserDto> getEventUser(int eventId);
+    List<UserDto> getParticipants(int eventId);
 
-    public UserDto getById(int id);
+    UserDto getById(int id);
 
-    public void grantAdmin(int id);
 
 }

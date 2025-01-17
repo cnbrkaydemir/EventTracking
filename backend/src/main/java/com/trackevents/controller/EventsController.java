@@ -31,43 +31,44 @@ public class EventsController {
     }
 
     @GetMapping("/event/{id}")
-    public ResponseEntity<EventDto> createEvent(@PathVariable int id) {
+    public ResponseEntity<EventDto> findEventById(@PathVariable int id) {
         return ResponseEntity.ok(eventService.findById(id));
     }
 
-
-    @PostMapping("/addUser")
-    public ResponseEntity<EventDto> addUsers(@RequestBody ParticipationDto info) {
-        return ResponseEntity.ok(eventService.addUsers(info));
-    }
-
-    @PostMapping("/discardUser")
-    public ResponseEntity<EventDto> discardUsers(@RequestBody ParticipationDto info) {
-        return ResponseEntity.ok(eventService.discardUsers(info));
-    }
-
-    @PostMapping("/event/{userId}")
-    public ResponseEntity<List<EventDto>> userEvents(@PathVariable int userId) {
-        return ResponseEntity.ok(eventService.getUserEvents(userId));
-    }
-
-    @GetMapping("/events")
-    public ResponseEntity<List<EventDto>> displayEvents() {
+    @GetMapping("/event")
+    public ResponseEntity<List<EventDto>> displayAllEvents() {
         return ResponseEntity.ok(eventService.getAllEvents());
     }
 
-    @GetMapping("/month/{eventId}")
-    public ResponseEntity<List<Integer>> getMonth(@PathVariable int eventId) {
-       return ResponseEntity.ok(eventService.calculateMonth(eventId));
+
+    @PostMapping("/add")
+    public ResponseEntity<EventDto> addUsersToEvent(@RequestBody ParticipationDto info) {
+        return ResponseEntity.ok(eventService.addUsers(info));
+    }
+
+    @PostMapping("/discard")
+    public ResponseEntity<EventDto> discardUsersFromEvent(@RequestBody ParticipationDto info) {
+        return ResponseEntity.ok(eventService.discardUsers(info));
+    }
+
+    @GetMapping("/attending/{userId}")
+    public ResponseEntity<List<EventDto>> getUserEvents(@PathVariable int userId) {
+        return ResponseEntity.ok(eventService.getUserEvents(userId));
+    }
+
+
+    @GetMapping("/month/{userId}")
+    public ResponseEntity<List<Integer>> getUpcomingEventsByMonth(@PathVariable int userId) {
+       return ResponseEntity.ok(eventService.calculateMonthlyDistribution(userId));
     }
 
     @GetMapping("/absent/{eventId}")
-    public ResponseEntity<List<UserDto>> displayAbsent(@PathVariable int eventId) {
+    public ResponseEntity<List<UserDto>> displayAbsentUsers(@PathVariable int eventId) {
         return ResponseEntity.ok(eventService.findAbsent(eventId));
     }
 
     @GetMapping("/upcoming/{userId}")
-    public ResponseEntity<List<EventDto>> getUpcoming(@PathVariable int userId) {
+    public ResponseEntity<List<EventDto>> getUpcomingEventsOfUser(@PathVariable int userId) {
         return ResponseEntity.ok(eventService.upcomingEvents(userId));
     }
 

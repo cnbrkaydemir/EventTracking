@@ -23,7 +23,7 @@ public class Authority extends BaseEntity{
     @NotBlank
     private String name;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
     private Users users;
 

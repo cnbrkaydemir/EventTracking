@@ -26,7 +26,6 @@ public class EventDto extends BaseDto {
 
     private Date eventExpired;
 
-    private int createdId;
 
     private List<UserDto> participants;
 }

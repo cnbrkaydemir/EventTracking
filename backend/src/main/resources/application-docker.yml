@@ -1,11 +1,9 @@
 spring:
   cache:
     type: redis
-
   redis:
-    host: localhost
+    host: redis
     port: 6379
-
   jpa:
     show-sql: true
     hibernate:
@@ -15,12 +13,10 @@ spring:
       hibernate.cache.use_query_cache: false
       hibernate.cache.use_second_level_cache: false
       hibernate.cache.use_structured_entities: false
-
   datasource:
-    url: jdbc:postgresql://localhost:5432/events
+    url: jdbc:postgresql://db:5432/events
     username: cnbrkaydemir
     password: password
-
 
 rsa:
   private-key: classpath:certs/private.pem

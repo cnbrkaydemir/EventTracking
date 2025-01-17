@@ -9,11 +9,11 @@ services:
     container_name: eventApp
     depends_on:
       - db
+      - redis
     environment:
+      - SPRING_PROFILES_ACTIVE=docker
       - POSTGRES_USER=cnbrkaydemir
       - POSTGRES_PASSWORD=password
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/events
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
     ports:
       - 8080:8080
@@ -29,5 +29,6 @@ services:
 
   redis:
     image: redis:latest
+    container_name: redis
     ports:
       - "6379:6379"

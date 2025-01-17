@@ -41,7 +41,7 @@ private  final ModelMapper modelMapper;
 
     @Override
     @Transactional
-    @CacheEvict(value = "event", allEntries = true)
+    @CacheEvict(value = "all_event", allEntries = true)
     public EventDto createEvent(Events event){
         Users adminUser = userRepository.findByUserId(event.getCreated_by().getUserId())
                         .orElseThrow(() -> new UserNotFoundException(event.getCreated_by().getUserId()));
@@ -81,7 +81,7 @@ private  final ModelMapper modelMapper;
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "event")
+    @Cacheable(value = "user_event")
     public List<EventDto> getUserEvents(int userId){
 
         Users target = userRepository.findByUserId(userId)
@@ -96,7 +96,7 @@ private  final ModelMapper modelMapper;
 
     @Override
     @Transactional
-    @CacheEvict(value = "event", allEntries = true)
+    @CacheEvict(value = "user_event", allEntries = true)
     public EventDto discardUsers(ParticipationDto info){
         Events event = eventRepository.findById(info.getEventId())
                 .orElseThrow(() -> new EventNotFoundException(info.getEventId()));
@@ -114,7 +114,7 @@ private  final ModelMapper modelMapper;
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "event")
+    @Cacheable(value = "all_event")
     public List<EventDto> getAllEvents(){
 
        List<Events> events = eventRepository.findAll();
@@ -128,7 +128,7 @@ private  final ModelMapper modelMapper;
 
     @Override
     @Transactional(readOnly = true)
-    public List<Integer> calculateMonth(int userId) {
+    public List<Integer> calculateMonthlyDistribution(int userId) {
         AtomicInteger[] monthCounts = {new AtomicInteger(0), new AtomicInteger(0), new AtomicInteger(0), new AtomicInteger(0)};
 
         // Get the current month

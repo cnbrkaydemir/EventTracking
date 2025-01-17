@@ -3,7 +3,6 @@ package com.trackevents.controller;
 
 import com.trackevents.dto.UserDto;
 import com.trackevents.model.Users;
-import com.trackevents.service.EventService;
 import com.trackevents.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +19,13 @@ public class UsersController {
 
 
     @PostMapping(path = "/user")
-    public ResponseEntity<UserDto> register(@RequestBody Users user){
+    public ResponseEntity<UserDto> createUser(@RequestBody Users user){
         return ResponseEntity.ok(userService.createUser(user));
     }
 
-    @GetMapping(path = "/user/{id}")
-    public ResponseEntity<UserDto> displayUser(@PathVariable int id){
-        return ResponseEntity.ok(userService.getById(id));
+    @GetMapping(path = "/user/{userId}")
+    public ResponseEntity<UserDto> findUserById(@PathVariable int userId){
+        return ResponseEntity.ok(userService.getById(userId));
     }
 
 
@@ -36,16 +35,14 @@ public class UsersController {
     }
 
 
-    @GetMapping(path = "/eventUser/{id}")
-    public ResponseEntity<List<UserDto>> displayEventUsers(@PathVariable int id) {
-        return ResponseEntity.ok(userService.getEventUser(id));
+    @GetMapping(path = "/participants/{eventId}")
+    public ResponseEntity<List<UserDto>> displayParticipantsOfEvent(@PathVariable int eventId) {
+        return ResponseEntity.ok(userService.getParticipants(eventId));
     }
 
-    @PostMapping(path = "/admin/{id}")
-    public ResponseEntity<String> grantAdmin(@PathVariable int id){
-        userService.grantAdmin(id);
-        return ResponseEntity.ok("Granted Admin Successfully");
+    @PostMapping(path = "/admin")
+    public ResponseEntity<UserDto> grantAdmin(@RequestBody Users user){
+        return ResponseEntity.ok(userService.createAdmin(user));
     }
-
 
 }

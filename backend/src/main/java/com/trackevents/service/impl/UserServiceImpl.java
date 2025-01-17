@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,18 +33,22 @@ public class UserServiceImpl implements UserService {
 
     private final EventRepository eventRepository;
 
-    private final AuthorityRepository auth;
+    private final AuthorityRepository authorityRepository;
 
     private final ModelMapper modelMapper;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     @Transactional
-    @CacheEvict(value = "user", allEntries = true)
+    @CacheEvict(value = "all_user", allEntries = true)
     public UserDto createUser(Users user){
 
         if(userRepository.findByUserEmail(user.getUserEmail()).isPresent()){
             throw  new DuplicateUserException(user.getUserEmail());
         }
+
+        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
 
         user.setCreatedBy("admin");
 
@@ -51,26 +56,22 @@ public class UserServiceImpl implements UserService {
 
         user.setUserRole("user");
 
-        Authority userAuthority= new Authority("ROLE_USER",user);
+
+        Authority userAuthority= new Authority("USER",user);
 
         Set<Authority> userAuthorities= new HashSet<>();
         userAuthorities.add(userAuthority);
         user.setAuthorities(userAuthorities);
+
+
         return modelMapper.map(userRepository.save(user), UserDto.class);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    @Cacheable(value = "user")
-    public UserDto getByEmail(String email){
-        return modelMapper.map(userRepository.findByUserEmail(email)
-                        .orElseThrow(() -> new EmailNotFoundException(email))
-                ,UserDto.class);
-    }
+
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "user")
+    @Cacheable(value = "all_user")
     public List<UserDto> getAllUsers(){
         return userRepository.findAll()
                 .stream()
@@ -81,7 +82,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "event_user")
-    public List<UserDto> getEventUser(int eventId){
+    public List<UserDto> getParticipants(int eventId){
         return eventRepository.findByEventId(eventId)
                 .orElseThrow(()-> new EventNotFoundException(eventId))
                 .getParticipants()
@@ -99,14 +100,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "user", allEntries = true)
-    public void grantAdmin(int id) {
-        Users newAdmin = userRepository.findByUserId(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
+    @CacheEvict("all_user")
+    public UserDto createAdmin(Users user) {
+        if(userRepository.findByUserEmail(user.getUserEmail()).isPresent()){
+            throw  new DuplicateUserException(user.getUserEmail());
+        }
 
-        newAdmin.setUserRole("admin");
-        Authority newAuthority= new Authority("ROLE_ADMIN",newAdmin);
-        newAdmin.getAuthorities().add(newAuthority);
-        auth.save(newAuthority);
+        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
+
+        user.setCreatedBy("admin");
+
+        user.setCreatedDate(new Date());
+
+        user.setUserRole("admin");
+
+
+        Authority userAuthority= new Authority("ADMIN",user);
+
+        Set<Authority> userAuthorities= new HashSet<>();
+        userAuthorities.add(userAuthority);
+        user.setAuthorities(userAuthorities);
+
+
+        return modelMapper.map(userRepository.save(user), UserDto.class);
     }
 }

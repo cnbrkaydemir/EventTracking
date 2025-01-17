@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -66,9 +68,9 @@ public class Users extends BaseEntity{
 
 
 
-    @OneToMany(mappedBy="users",fetch=FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy="users",fetch=FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Authority> authorities;
-
 
 
 

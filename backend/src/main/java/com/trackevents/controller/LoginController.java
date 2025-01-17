@@ -1,27 +1,28 @@
 package com.trackevents.controller;
 
-import com.trackevents.exception.EmailNotFoundException;
-import com.trackevents.model.Users;
-import com.trackevents.repository.UserRepository;
+import com.trackevents.dto.LoginDto;
+import com.trackevents.dto.UserDto;
+
+import com.trackevents.service.LoginService;
+import com.trackevents.service.TokenService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
-import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class LoginController {
 
+    private final LoginService loginService;
 
-    private final UserRepository userRepository;
-
-    @RequestMapping("/api")
-    public Users getUserDetailsAfterLogin(Principal user){
-        return userRepository.findByUserEmail(user.getName())
-                .orElseThrow(() -> new EmailNotFoundException(user.getName()));
-
+    @PostMapping("/token")
+    public ResponseEntity<LoginDto> token(Authentication authentication){
+        return ResponseEntity.ok(loginService.handleLogin(authentication));
     }
+
 }
