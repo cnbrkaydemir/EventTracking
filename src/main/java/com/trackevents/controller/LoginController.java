@@ -1,29 +1,28 @@
 package com.trackevents.controller;
 
-import com.trackevents.model.Users;
-import com.trackevents.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.trackevents.dto.LoginDto;
+import com.trackevents.dto.UserDto;
+
+import com.trackevents.service.LoginService;
+import com.trackevents.service.TokenService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
-import java.util.List;
 
 @RestController
+@RequestMapping("/api")
+@RequiredArgsConstructor
 public class LoginController {
 
-    @Autowired
-    UserRepository userRepository;
+    private final LoginService loginService;
 
-    @RequestMapping("/user")
-    public Users getUserDetailsAfterLogin(Principal user){
-        List<Users> users=userRepository.findByUserEmail(user.getName());
-
-        if(users.size()>0){
-            return users.get(0);
-        }
-
-        else
-            return null;
+    @PostMapping("/token")
+    public ResponseEntity<LoginDto> token(Authentication authentication){
+        return ResponseEntity.ok(loginService.handleLogin(authentication));
     }
+
 }
