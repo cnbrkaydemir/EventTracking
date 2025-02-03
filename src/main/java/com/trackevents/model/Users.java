@@ -3,9 +3,13 @@ package com.trackevents.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -18,7 +22,9 @@ import java.util.Set;
 @Table(name="users")
 @Getter
 @Setter
-public class Users {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Users extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -50,7 +56,7 @@ public class Users {
     @NotBlank
     private String userRole;
 
-@JsonIgnore
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(name = "participation",
             joinColumns = {
@@ -61,24 +67,11 @@ public class Users {
 
 
 
-@JsonIgnore
-    @OneToMany(mappedBy="users",fetch=FetchType.EAGER)
+
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy="users",fetch=FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Authority> authorities;
 
-
-    public Users(){
-
-    }
-
-
-    public Users(int userId, String userName, String userSurname, String userEmail, String userPassword, String role) {
-        this.userId = userId;
-        this.userName = userName;
-        this.userSurname = userSurname;
-        this.userEmail = userEmail;
-        this.userPassword = userPassword;
-        this.userRole = role;
-    }
 
 
 }

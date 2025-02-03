@@ -3,7 +3,6 @@ package com.trackevents.controller;
 
 import com.trackevents.model.EventInfo;
 import com.trackevents.model.Events;
-import com.trackevents.model.UserDto;
 import com.trackevents.model.Users;
 import com.trackevents.service.EventService;
 import com.trackevents.service.UserService;

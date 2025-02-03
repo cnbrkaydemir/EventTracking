@@ -2,7 +2,6 @@ package com.trackevents.controller;
 
 import com.trackevents.model.Authority;
 import com.trackevents.model.Events;
-import com.trackevents.model.UserParticipation;
 import com.trackevents.model.Users;
 import com.trackevents.repository.AuthorityRepository;
 import com.trackevents.service.EventService;

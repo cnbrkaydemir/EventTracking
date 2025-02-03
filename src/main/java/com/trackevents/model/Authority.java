@@ -1,6 +1,7 @@
 package com.trackevents.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,7 +11,8 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "authorities")
 @Getter
 @Setter
-public class Authority {
+@NoArgsConstructor
+public class Authority extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +23,7 @@ public class Authority {
     @NotBlank
     private String name;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
     private Users users;
 
@@ -30,8 +32,5 @@ public class Authority {
         this.users = users;
     }
 
-    public Authority(){
-
-    }
 }
 
