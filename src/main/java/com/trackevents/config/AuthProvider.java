@@ -1,9 +1,10 @@
 package com.trackevents.config;
 
+import com.trackevents.exception.EmailNotFoundException;
 import com.trackevents.model.Authority;
 import com.trackevents.model.Users;
 import com.trackevents.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,28 +20,31 @@ import java.util.List;
 import java.util.Set;
 
 @Component
+@RequiredArgsConstructor
 public class AuthProvider implements AuthenticationProvider {
 
-    @Autowired
-    UserRepository usersRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String email=authentication.getName();
-        String pwd=authentication.getCredentials().toString();
-        List<Users> target=usersRepository.findByUserEmail(email);
+        String email = authentication.getName();
+        String pwd = authentication.getCredentials().toString();
 
-        if(target.size()>0){
-            if(passwordEncoder.matches(pwd,target.get(0).getUserPassword())){
-                return new UsernamePasswordAuthenticationToken(email,pwd,getGrantedAuthorities(target.get(0).getAuthorities()));
-            }
-            throw new BadCredentialsException("Invalid password!");
+        Users target = userRepository.findByUserEmail(email)
+                .orElseThrow(() -> new EmailNotFoundException(email));
+
+
+        String s = target.getUserPassword();
+        if (passwordEncoder.matches(pwd, target.getUserPassword())) {
+            return new UsernamePasswordAuthenticationToken(email, pwd, getGrantedAuthorities((Set<Authority>) target.getAuthorities()));
         }
-        throw new BadCredentialsException("No user registered with this details!");
+
+        throw new BadCredentialsException("Invalid password!");
     }
+
 
     private List<GrantedAuthority> getGrantedAuthorities(Set<Authority> authorities) {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
@@ -50,9 +54,9 @@ public class AuthProvider implements AuthenticationProvider {
         return grantedAuthorities;
     }
 
-    @Override
-    public boolean supports(Class<?> authenticationType) {
-        return authenticationType.equals(UsernamePasswordAuthenticationToken.class);
-    }
 
+    @Override
+    public boolean supports(Class<?> authentication) {
+        return authentication.equals(UsernamePasswordAuthenticationToken.class);
+    }
 }
