@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+
+  app:
+    image: cnbrkaydemir/event:latest
+    build:
+      context: .
+    container_name: eventApp
+    depends_on:
+      - db
+      - redis
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - POSTGRES_USER=cnbrkaydemir
+      - POSTGRES_PASSWORD=password
+
+    ports:
+      - 8080:8080
+
+  db:
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: cnbrkaydemir
+      POSTGRES_DB: events
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
