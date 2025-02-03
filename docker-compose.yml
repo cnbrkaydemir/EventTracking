@@ -10,22 +10,27 @@ services:
     depends_on:
       - db
       - redis
+    env_file:
+      - .env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - POSTGRES_USER=cnbrkaydemir
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - SPRING_DATASOURCE_URL=${DB_URL_DOCKER}
+
 
     ports:
       - 8080:8080
 
   db:
+    container_name: db
     image: postgres:alpine
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: cnbrkaydemir
-      POSTGRES_DB: events
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_ENTRY}
 
   redis:
     image: redis:latest
